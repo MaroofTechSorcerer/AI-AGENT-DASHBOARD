@@ -6,7 +6,7 @@ from dotenv import load_dotenv
 import os
 import spacy
 
-# Loading environment variables
+# Load environment variables
 load_dotenv()
 
 # Google Sheets API setup
@@ -17,13 +17,22 @@ creds = service_account.Credentials.from_service_account_file(
     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
 def get_google_sheet(spreadsheet_id, range_name):
-    service = build('sheets', 'v4', credentials=creds)
-    sheet = service.spreadsheets()
-    result = sheet.values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
-    values = result.get('values', [])
-    if not values:
-        return pd.DataFrame()
-    return pd.DataFrame(values[1:], columns=values[0])
+    try:
+        service = build('sheets', 'v4', credentials=creds)
+        sheet = service.spreadsheets()
+        result = sheet.values().get(spreadsheetId=spreadsheet_id, range=range_name).execute()
+        values = result.get('values', [])
+        
+        if not values:
+            st.error('No data found.')
+            return None
+
+        df = pd.DataFrame(values[1:], columns=values[0])
+        return df
+
+    except Exception as e:
+        st.error(f'Error: {e}')
+        return None
 
 def extract_info(df, column, prompt):
     try:
@@ -73,11 +82,21 @@ def main():
         st.write(df.head())
         if not df.empty:
             columns = df.columns.tolist()
-            selected_column = st.selectbox("Select the column with numeric values", columns)
-            query = st.text_input("Enter your custom prompt (e.g., 'Get me the minimum value of column X'):")
-            if st.button("Extract Information"):
+            selected_column = st.selectbox("Select the column with numeric values", columns, key='csv_col_select')
+            query = st.text_input("Enter your custom prompt (e.g., 'Get me the minimum value of column X'):", key='csv_query')
+            if st.button("Extract Information", key='csv_extract'):
                 extracted_info = extract_info(df, selected_column, query)
                 st.write({"Extracted Info": extracted_info})
+                
+                # Add download button for the extracted information
+                result_df = pd.DataFrame([{"Extracted Info": extracted_info}])
+                csv = result_df.to_csv(index=False).encode('utf-8')
+                st.download_button(
+                    label="Download Extracted Information",
+                    data=csv,
+                    file_name="extracted_info.csv",
+                    mime="text/csv"
+                )
 
     # Google Sheets connection section
     st.header("Connect to Google Sheets")
@@ -85,18 +104,35 @@ def main():
     range_name = st.text_input("Enter data range (e.g., Sheet1!A1:D10)")
 
     if st.button("Load Google Sheet"):
-        df = get_google_sheet(spreadsheet_id, range_name)
-        if df.empty:
-            st.error("No data found.")
+        if spreadsheet_id and range_name:
+            df = get_google_sheet(spreadsheet_id, range_name)
+            if df is not None:
+                st.session_state['google_df'] = df
+                st.write("Google Sheet Data Preview:")
+                st.write(df.head())
+            else:
+                st.error("No data found. Please check the Google Sheets ID and range.")
         else:
-            st.write("Google Sheet Data Preview:")
-            st.write(df.head())
-            columns = df.columns.tolist()
-            selected_column = st.selectbox("Select the column with numeric values", columns)
-            query = st.text_input("Enter your custom prompt (e.g., 'Get me the minimum value of column X'):")
-            if st.button("Extract Information from Google Sheet"):
-                extracted_info = extract_info(df, selected_column, query)
-                st.write({"Extracted Info": extracted_info})
+            st.error("Please provide both Google Sheets ID and range.")
+
+    if 'google_df' in st.session_state:
+        df = st.session_state['google_df']
+        columns = df.columns.tolist()
+        selected_column = st.selectbox("Select the column with numeric values", columns, key='google_col_select')
+        query = st.text_input("Enter your custom prompt (e.g., 'Get me the minimum value of column X'):", key='google_query')
+        if st.button("Extract Information from Google Sheet", key='google_extract'):
+            extracted_info = extract_info(df, selected_column, query)
+            st.write({"Extracted Info": extracted_info})
+            
+            # Add download button for the extracted information
+            result_df = pd.DataFrame([{"Extracted Info": extracted_info}])
+            csv = result_df.to_csv(index=False).encode('utf-8')
+            st.download_button(
+                label="Download Extracted Information",
+                data=csv,
+                file_name="extracted_info.csv",
+                mime="text/csv"
+            )
 
 if __name__ == "__main__":
     main()
