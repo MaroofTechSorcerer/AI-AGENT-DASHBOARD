@@ -1,10 +1,7 @@
-Here’s the revised version of your README.md without the "Contributing" and "License" sections:
-
-```markdown
 # AI Agent Dashboard
 
 ## Project Description
-The AI Agent Dashboard is an intelligent tool designed to assist users in extracting valuable insights from data. Users can upload CSV files or connect to Google Sheets to retrieve specific information from a selected column using natural language prompts. The dashboard supports various operations such as calculating the minimum, maximum, average, sum, and count of numeric values.
+The **AI Agent Dashboard** is an intelligent tool designed to assist users in extracting valuable insights from data. Users can upload CSV files or connect to Google Sheets to retrieve specific information from a selected column using natural language prompts. The dashboard supports various operations such as calculating the minimum, maximum, average, sum, and count of numeric values.
 
 ## Table of Contents
 1. [Project Description](#project-description)
@@ -29,6 +26,9 @@ The AI Agent Dashboard is an intelligent tool designed to assist users in extrac
    git clone https://github.com/your-username/AI_AGENT_DASHBOARD.git
    cd AI_AGENT_DASHBOARD
    ```
+
+---
+
 
 2. **Create and activate a virtual environment** (optional but recommended):
    ```sh
