@@ -1,8 +1,3 @@
-Sure, here is the revised `README.md` file without the License and Contributing sections:
-
-### README.md
-
-```markdown
 # AI Agent Dashboard
 
 ## Project Description
@@ -99,4 +94,6 @@ Use this sample dataset to test the functionalities of the dashboard.
 - **Additional Queries Supported**: Supports more advanced queries by extending the `extract_info` function.
 
 ## Loom Video
-[https://www.loom.com/share/419eafe2f26a4af59b2bf347880aa4c9?sid=b9a98e22-1446-408c-9f64-f8e1110ed47d]
+https://www.loom.com/share/419eafe2f26a4af59b2bf347880aa4c9?sid=b9a98e22-1446-408c-9f64-f8e1110ed47d
+
+```
