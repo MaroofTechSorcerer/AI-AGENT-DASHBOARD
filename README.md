@@ -15,9 +15,7 @@ The AI Agent Dashboard is an intelligent tool designed to assist users in extrac
 7. [Example Queries](#example-queries)
 8. [Sample Dataset](#sample-dataset)
 9. [Optional Features](#optional-features)
-10. [Contributing](#contributing)
-11. [License](#license)
-12. [Loom Video](#loom-video)
+10. [Loom Video](#loom-video)
 
 ## Prerequisites
 - Python 3.6 or higher
