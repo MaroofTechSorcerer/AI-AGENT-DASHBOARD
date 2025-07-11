@@ -2,7 +2,7 @@ import streamlit as st
 import pandas as pd
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
-from dotenv import load_dotenv
+# from dotenv import load_dotenv
 import os
 # import spacy
 
@@ -11,10 +11,14 @@ load_dotenv()
 
 # Google Sheets API setup
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-SERVICE_ACCOUNT_FILE = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+creds = service_account.Credentials.from_service_account_info(
+    st.secrets["gcp_service_account"], scopes=SCOPES
+)
 
-creds = service_account.Credentials.from_service_account_file(
-    SERVICE_ACCOUNT_FILE, scopes=SCOPES)
+# SERVICE_ACCOUNT_FILE = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+
+# creds = service_account.Credentials.from_service_account_file(
+#     SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
 def get_google_sheet(spreadsheet_id, range_name):
     try:
