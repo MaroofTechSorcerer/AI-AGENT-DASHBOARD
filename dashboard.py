@@ -2,13 +2,19 @@ import streamlit as st
 import pandas as pd
 from google.oauth2 import service_account
 from googleapiclient.discovery import build
+from dotenv import load_dotenv
 import os
+import spacy
+
+# Load environment variables
+load_dotenv()
 
 # Google Sheets API setup
 SCOPES = ['https://www.googleapis.com/auth/spreadsheets.readonly']
-creds = service_account.Credentials.from_service_account_info(
-    st.secrets["gcp_service_account"], scopes=SCOPES
-)
+SERVICE_ACCOUNT_FILE = os.getenv("GOOGLE_APPLICATION_CREDENTIALS")
+
+creds = service_account.Credentials.from_service_account_file(
+    SERVICE_ACCOUNT_FILE, scopes=SCOPES)
 
 def get_google_sheet(spreadsheet_id, range_name):
     try:
@@ -30,6 +36,8 @@ def get_google_sheet(spreadsheet_id, range_name):
 
 def extract_info(df, column, prompt):
     try:
+        nlp = spacy.load("en_core_web_sm")
+        doc = nlp(prompt)
         prompt = prompt.lower()
         if "minimum" in prompt or "lowest" in prompt:
             result = df[column].astype(float).min()
@@ -80,6 +88,7 @@ def main():
                 extracted_info = extract_info(df, selected_column, query)
                 st.write({"Extracted Info": extracted_info})
                 
+                # Add download button for the extracted information
                 result_df = pd.DataFrame([{"Extracted Info": extracted_info}])
                 csv = result_df.to_csv(index=False).encode('utf-8')
                 st.download_button(
@@ -115,6 +124,7 @@ def main():
             extracted_info = extract_info(df, selected_column, query)
             st.write({"Extracted Info": extracted_info})
             
+            # Add download button for the extracted information
             result_df = pd.DataFrame([{"Extracted Info": extracted_info}])
             csv = result_df.to_csv(index=False).encode('utf-8')
             st.download_button(
