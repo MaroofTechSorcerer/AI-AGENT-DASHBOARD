@@ -4,7 +4,7 @@ from google.oauth2 import service_account
 from googleapiclient.discovery import build
 from dotenv import load_dotenv
 import os
-import spacy
+# import spacy
 
 # Load environment variables
 load_dotenv()
