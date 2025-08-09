@@ -3,6 +3,10 @@
 ## Project Description
 The AI Agent Dashboard is an intelligent tool designed to assist users in extracting valuable insights from data. Users can upload CSV files or connect to Google Sheets to retrieve specific information from a selected column using natural language prompts. The dashboard supports various operations such as calculating the minimum, maximum, average, sum, and count of numeric values.
 
+### 📥 Project Introduction Video
+
+https://drive.google.com/file/d/1YT1zuG8Y10E8qa_nRWPZzGycF8FilLqL/view?usp=sharing
+
 ## Table of Contents
 1. [Prerequisites](#prerequisites)
 2. [Installation](#installation)
